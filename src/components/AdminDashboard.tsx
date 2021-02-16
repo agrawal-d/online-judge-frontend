@@ -2,10 +2,11 @@ import axios from "axios";
 import React, { ReactElement, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, setUser } from "../reducers/userReducer";
-import { navigate } from "@reach/router";
+import { Link, navigate } from "@reach/router";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import Loading from "./Loading";
 import { User } from "../types";
+import NavBar from "./NavBar";
 
 export default function AdminDashboard() {
   const user = useSelector(selectUser) as User;
@@ -13,6 +14,9 @@ export default function AdminDashboard() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (allUsers) {
+      return;
+    }
     axios.get("/users").then((res) => {
       const data = res.data;
       if (data.error || data.errors) {
@@ -20,13 +24,7 @@ export default function AdminDashboard() {
       }
       setAllUsers(data);
     });
-  });
-
-  const logout = () => {
-    axios.post("/auth/logout");
-    dispatch(setUser(null));
-    navigate("/");
-  };
+  }, [allUsers]);
 
   const renderUsersList = () => {
     if (!allUsers) {
@@ -36,7 +34,7 @@ export default function AdminDashboard() {
     const p: ReactElement[] = [];
     allUsers.forEach((user) => {
       p.push(
-        <div className="p-1">
+        <div className="p-1" key={user.google_id}>
           <Row>
             <Col md="auto">
               <img
@@ -68,23 +66,17 @@ export default function AdminDashboard() {
     return (
       <div className="home">
         <Container>
-          <Row className="align-items-center">
-            <Col>
-              <img src={user.picture} alt="profile" />
-            </Col>
-            <Col>
-              <h3 className="text-right">
-                Welcome, Administrator {user.name}{" "}
-              </h3>
-              <Button className="float-right" onClick={logout}>
-                Logout
-              </Button>
-            </Col>
-          </Row>
+          <NavBar />
+
           <Row>
             <Col>{renderUsersList()}</Col>
             <Col>
               <h3>Admin actions</h3>
+              <ul>
+                <li>
+                  <Link to="/user-setup">Setup Hacker Earth Credentials</Link>
+                </li>
+              </ul>
             </Col>
           </Row>
         </Container>

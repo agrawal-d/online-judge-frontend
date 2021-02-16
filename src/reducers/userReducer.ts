@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
+import { downloadUser } from "../lib";
 import { AppThunk, RootState } from "../store";
 import { User } from "../types";
 
@@ -16,6 +18,24 @@ export const userSlice = createSlice({
 });
 
 export const { setUser } = userSlice.actions;
+
+export const refreshUser = (): AppThunk => async (dispatch) => {
+  const newUser = await downloadUser();
+
+  if (newUser.errors) {
+    console.error(newUser);
+    throw new Error(newUser);
+  }
+  return dispatch(setUser(newUser));
+};
+
+export const updateHE = (data: {
+  he_client_id: string;
+  he_client_secret: string;
+}): AppThunk => async (dispatch) => {
+  await axios.post("users/me/update-he", data);
+  return dispatch(refreshUser());
+};
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

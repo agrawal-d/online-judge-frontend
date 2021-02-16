@@ -10,3 +10,21 @@
   width: 50%;
   padding: 20px 0px;
 }
+
+.container {
+  margin-top: 100px;
+}
+
+.b {
+  border: 1px solid grey;
+}
+
+.dash-navbar {
+  margin-bottom: 40px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid whitesmoke;
+}
+
+.btn {
+  margin: 0px 2px;
+}

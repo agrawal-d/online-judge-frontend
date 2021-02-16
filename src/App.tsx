@@ -3,6 +3,7 @@ import axios from "axios";
 import { navigate, Router } from "@reach/router";
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
+import UserSetup from "./components/UserSetup";
 
 import config from "./config";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,6 +47,7 @@ function App() {
       <Router>
         <Home path="/" default />
         <Dashboard path="/dashboard" />
+        <UserSetup path="/user-setup" />
       </Router>
     </div>
   );
