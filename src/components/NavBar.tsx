@@ -28,7 +28,7 @@ export default function Navbar() {
 
   return (
     <div className="dash-navbar">
-      <Row className="align-items-center">
+      <Row className="align-items-center" >
         <Col>
           <img src={user.picture} className="b" alt="profile" />
         </Col>

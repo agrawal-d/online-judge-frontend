@@ -49,7 +49,7 @@ export default function UserSetup(props: RouteComponentProps) {
           <hr />
           <InputGroup className="mb-3">
             <InputGroup.Prepend>
-              <InputGroup.Text>Client ID</InputGroup.Text>
+              <InputGroup.Text>Client ID :- 0c4299c677baa31c486d35b24c12f78a460b2e265df2.api.hackerearth.com</InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
               placeholder="Client ID"
@@ -59,7 +59,7 @@ export default function UserSetup(props: RouteComponentProps) {
           </InputGroup>
           <InputGroup className="mb-3">
             <InputGroup.Prepend>
-              <InputGroup.Text>Client Secret</InputGroup.Text>
+              <InputGroup.Text>Client Secret:- 3a6b4806ff73a2828ad26558dd899140043be929</InputGroup.Text>
             </InputGroup.Prepend>
             <FormControl
               placeholder="Client Secret"
