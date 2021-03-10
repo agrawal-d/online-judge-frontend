@@ -5,7 +5,6 @@ import { navigate, RouteComponentProps } from "@reach/router";
 import { User } from "../types";
 import AdminDashboard from "./AdminDashboard";
 import StudentDashboard from "./StudentDashboard";
-import Loading from "./Loading";
 
 export default function Dashboard(props: RouteComponentProps) {
   const user = useSelector(selectUser) as User;
