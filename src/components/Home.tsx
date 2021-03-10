@@ -1,7 +1,6 @@
 import React from "react";
-import axios from "axios";
 
-import { Router, RouteComponentProps, Link } from "@reach/router";
+import { RouteComponentProps } from "@reach/router";
 import { Container, Col, Row, Button } from "react-bootstrap";
 import config from "../config";
 

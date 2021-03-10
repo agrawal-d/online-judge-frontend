@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { ReactElement, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser, setUser } from "../reducers/userReducer";
-import { Link, navigate } from "@reach/router";
+import { selectUser } from "../reducers/userReducer";
+import { Link } from "@reach/router";
 import {
   Container,
   Row,

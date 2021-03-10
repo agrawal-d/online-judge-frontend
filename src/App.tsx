@@ -15,7 +15,6 @@ import {
 
 import { Button, Modal } from "react-bootstrap";
 import { GlobalError } from "./types";
-import { lstat } from "fs";
 
 axios.defaults.baseURL = config.apiBase;
 axios.defaults.withCredentials = true;
