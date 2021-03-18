@@ -9,8 +9,6 @@ import NavBar from "./NavBar";
 import Loading from "./Loading";
 
 export default function StudentDashboard(props: RouteComponentProps) {
-  const user = useSelector(selectUser) as User;
-  const dispatch = useDispatch();
   const [allAssignments,setAllAssignments] = useState<[] | undefined>(undefined);
 
 
@@ -72,7 +70,7 @@ export default function StudentDashboard(props: RouteComponentProps) {
           <Col>
           <Card body>{renderAssignmentsList()}</Card>
           <br />
-          <Card body>
+          {/* <Card body>
             <h3> Add a new Assignment</h3>
           <InputGroup className ="mb-3">
             <InputGroup.Prepend>
@@ -85,7 +83,7 @@ export default function StudentDashboard(props: RouteComponentProps) {
                   />
           </InputGroup>
 
-          </Card>
+          </Card> */}
           </Col>
         </Row>
       </Container>

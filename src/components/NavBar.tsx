@@ -22,6 +22,9 @@ export default function Navbar() {
     } else if (user.is_ta) {
       return "TA " + user.name;
     }
+    else if(user.is_instructor){
+      return "Instructor " + user.name;
+    }
 
     return user.name;
   };
@@ -36,9 +39,9 @@ export default function Navbar() {
           <h3 className="text-right">Welcome, {getName()} </h3>
           <p className="text-right">
             <Link to="/dashboard">
-              <Button className="">Dashboard</Button>
+              <Button variant = "primary">Dashboard</Button>
             </Link>
-            <Button className="btn-danger" onClick={logout}>
+            <Button variant = "danger" onClick={logout}>
               Logout
             </Button>
           </p>

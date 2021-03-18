@@ -5,6 +5,7 @@ import { navigate, RouteComponentProps } from "@reach/router";
 import { User } from "../types";
 import AdminDashboard from "./AdminDashboard";
 import StudentDashboard from "./StudentDashboard";
+import InstructorDashboard from "./InstructorDashboard";
 
 export default function Dashboard(props: RouteComponentProps) {
   const user = useSelector(selectUser) as User;
@@ -17,7 +18,10 @@ export default function Dashboard(props: RouteComponentProps) {
 
   if (user.is_admin) {
     return <AdminDashboard />;
-  } else {
-    return <StudentDashboard />;
+  } else if (user.is_instructor){
+    return <InstructorDashboard />;
+  }
+  else {
+    return <StudentDashboard/>;
   }
 }
