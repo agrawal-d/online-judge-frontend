@@ -15,6 +15,7 @@ import {
 
 import { Button, Modal } from "react-bootstrap";
 import { GlobalError } from "./types";
+import Assignment from "./components/Assignment";
 
 axios.defaults.baseURL = config.apiBase;
 axios.defaults.withCredentials = true;
@@ -107,6 +108,7 @@ function App() {
         <Home path="/" default />
         <Dashboard path="/dashboard" />
         <UserSetup path="/user-setup" />
+        <Assignment path="/assignment/:assignmentId" />
       </Router>
     </div>
   );

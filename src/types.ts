@@ -25,6 +25,27 @@ type ValidatorError = {
   location: string;
 };
 
+export type Testcase = {
+  input: string;
+  output: string;
+  pass?: boolean;
+  got_output?: boolean;
+};
+
+export type Problem = {
+  name: string;
+  statement: string;
+  language: string;
+  testcases: [Testcase];
+};
+
+export type AssignmentDetails = {
+  id: string;
+  name: string;
+  start: string;
+  end: string;
+  problems: [Problem];
+};
 type CustomError = { message: string };
 
 export type GlobalError = XOR<CustomError, ValidatorError>;

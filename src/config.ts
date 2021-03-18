@@ -8,13 +8,16 @@ const isLocalhost = Boolean(
     )
 );
 
+const defaultCode = "#include <stdio.h>\n\nint main() {\n\treturn 0;\n}\n";
+
 const config = {
   root: isLocalhost
     ? "http://localhost:3001"
     : "https://bits-judge.herokuapp.com", // frontend,
   apiBase: isLocalhost
     ? "http://localhost:3000/api/v0"
-    : "https://bits-judge-server.herokuapp.com/api/v0", //backend
+    : "https://bits-judge-server.herokuapp.com/api/v0", //backend,
+  defaultCode,
 };
 
 export default config;
