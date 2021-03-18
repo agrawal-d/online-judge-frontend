@@ -16,6 +16,8 @@ import {
 import { Button, Modal } from "react-bootstrap";
 import { GlobalError } from "./types";
 import Assignment from "./components/Assignment";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 axios.defaults.baseURL = config.apiBase;
 axios.defaults.withCredentials = true;
@@ -40,13 +42,18 @@ function App() {
         .get("/users/me")
         .then((res) => {
           const data = res.data;
-          if (data.error) {
-            navigate("/");
+          if (data.error || data.errors) {
+            if (window.location.pathname !== "/") {
+              navigate("/");
+            }
+            return;
           }
           dispatch(setUser(data));
         })
         .catch((error) => {
-          navigate("/");
+          if (window.location.pathname !== "/") {
+            navigate("/");
+          }
         });
     }
   });
@@ -85,6 +92,7 @@ function App() {
 
   return (
     <div className="App">
+      <ToastContainer />
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Oops! Check out these errors</Modal.Title>

@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser, setUser } from "../reducers/userReducer";
-import { Link, navigate, RouteComponentProps } from "@reach/router";
+import { selectUser } from "../reducers/userReducer";
+import { RouteComponentProps } from "@reach/router";
 import {
   Container,
   Row,
@@ -20,6 +20,10 @@ import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
 import config from "../config";
+import { setGlobalErrors } from "../reducers/globalErrorsReducer";
+import classNames from "classnames";
+import { toast } from "react-toastify";
+import { clone } from "../lib";
 
 export default function Assignment(props: RouteComponentProps) {
   const user = useSelector(selectUser) as User;
@@ -60,6 +64,46 @@ export default function Assignment(props: RouteComponentProps) {
 
   const problem = () => assignment.problems[problemIdx];
 
+  const runTestcase = async (problemIdx: number, testcaseIdx: number) => {
+    const problem = assignment.problems[problemIdx];
+    const testcase = problem.testcases[testcaseIdx];
+
+    let ass = clone(assignment);
+    ass.problems[problemIdx].testcases[testcaseIdx] = {
+      ...testcase,
+      verdict: "Running ...",
+    };
+
+    setAssignment(ass);
+
+    const res = await axios.post("/assignments/run-testcase", {
+      assignment_id: assignment.id,
+      problem_id: problem.id,
+      testcase_id: testcase.id,
+      code: myCode[problemIdx],
+      input: testcase.input,
+      expected_output: testcase.output,
+    });
+
+    const data = res.data;
+
+    if (data.errors) {
+      return dispatch(setGlobalErrors(data.errors));
+    }
+
+    console.log(data);
+    let newAssignment = clone(assignment);
+    newAssignment.problems[problemIdx].testcases[testcaseIdx] = {
+      ...testcase,
+      verdict: data.verdict,
+      got_output: data.stdout,
+    };
+
+    console.log("Creating new assignment", newAssignment);
+
+    setAssignment(newAssignment);
+  };
+
   function onCodeChange(newValue: string) {
     const newMyCode = myCode.map((val, idx) => {
       if (idx === problemIdx) {
@@ -97,20 +141,51 @@ export default function Assignment(props: RouteComponentProps) {
   const renderTestcases = () => {
     let items: React.ReactNode[] = [];
     problem().testcases.forEach((tc, idx) => {
+      const pass = tc.verdict && tc.verdict === "PASS";
+      const fail = tc.verdict && tc.verdict === "FAIL";
+      const tcClassNames = classNames("tc", {
+        pass,
+        fail,
+      });
+
+      // let variant = "light";
+      // if (pass) {
+      //   variant = "success";
+      // } else {
+      //   variant = "danger";
+      // }
+
       items.push(
-        <Card className="tc">
+        <Card className={tcClassNames}>
           <Card.Body>
             <h4>Testcase {idx + 1}</h4>
             <p>
+              {tc.verdict && (
+                <>
+                  <b className="verdict">Status: {tc.verdict}</b>
+                  <br />
+                </>
+              )}
               <b>Input</b>
               <pre>
-                <code>{tc.input}</code>
+                <code>{tc.input} </code>
               </pre>
               <b>Expected Output</b>
               <pre>
-                <code>{tc.output}</code>
+                <code>{tc.output} </code>
               </pre>
+              {tc.got_output !== undefined && (
+                <>
+                  <b>Received Output</b>
+                  <pre>
+                    <code>{tc.got_output} </code>
+                  </pre>
+                </>
+              )}
             </p>
+            <Button onClick={() => runTestcase(problemIdx, idx)}>
+              Run testcase
+            </Button>
           </Card.Body>
         </Card>
       );
@@ -144,6 +219,9 @@ export default function Assignment(props: RouteComponentProps) {
           </Col>
           <Col>
             <AceEditor
+              height="100%"
+              width="100%"
+              fontSize={15}
               mode="c_cpp"
               className="code-editor"
               theme="github"
@@ -166,12 +244,14 @@ export default function Assignment(props: RouteComponentProps) {
             {renderTestcases()}
           </Col>
           <Col>
-            <Button variant="success" block>
-              Run sample testcases
+            <Button variant="success" size="lg" block>
+              Submit Problem {problemIdx + 1}
             </Button>
-            <Button variant="primary" block>
-              Submit problem {problemIdx + 1}
-            </Button>
+            <hr />
+            <p>
+              If you submit, your code will run against a set of additional,
+              hidden testcases.
+            </p>
           </Col>
         </Row>
       </div>

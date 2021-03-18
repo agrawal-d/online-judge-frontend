@@ -26,14 +26,16 @@ type ValidatorError = {
 };
 
 export type Testcase = {
+  id: string;
   input: string;
   output: string;
-  pass?: boolean;
+  verdict?: string;
   got_output?: boolean;
 };
 
 export type Problem = {
   name: string;
+  id: string;
   statement: string;
   language: string;
   testcases: [Testcase];
