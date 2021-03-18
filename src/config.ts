@@ -14,7 +14,7 @@ const config = {
     : "https://bits-judge.herokuapp.com", // frontend,
   apiBase: isLocalhost
     ? "http://localhost:3000/api/v0"
-    : "http://bits-judge-server.herokuapp.com/api/v0", //backend
+    : "https://bits-judge-server.herokuapp.com/api/v0", //backend
 };
 
 export default config;
