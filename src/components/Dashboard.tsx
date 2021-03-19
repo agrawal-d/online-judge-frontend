@@ -15,7 +15,7 @@ export default function Dashboard(props: RouteComponentProps) {
       navigate("/user-setup");
     }
   });
-
+  return <InstructorDashboard/>;
   if (user.is_admin) {
     return <AdminDashboard />;
   } else if (user.is_instructor){

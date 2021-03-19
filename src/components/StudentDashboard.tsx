@@ -70,20 +70,14 @@ export default function StudentDashboard(props: RouteComponentProps) {
           <Col>
           <Card body>{renderAssignmentsList()}</Card>
           <br />
-          {/* <Card body>
-            <h3> Add a new Assignment</h3>
-          <InputGroup className ="mb-3">
-            <InputGroup.Prepend>
-            <InputGroup.Text>Assignment Name </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-                    placeholder="Mid Semester Lab Exam"
-                    type="text"
-                  
-                  />
-          </InputGroup>
-
-          </Card> */}
+          </Col>
+          <Col>
+            <h3>Admin actions</h3>
+            <ul>
+              <li>
+                <Link to="/user-setup">Setup Hacker Earth Credentials</Link>
+              </li>
+            </ul>
           </Col>
         </Row>
       </Container>
