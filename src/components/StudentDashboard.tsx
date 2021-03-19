@@ -3,14 +3,12 @@ import React,{ ReactElement,useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, setUser } from "../reducers/userReducer";
 import { Link, navigate, RouteComponentProps } from "@reach/router";
-import { Container, Row, Col,Alert,Card } from "react-bootstrap";
+import { Container, Row, Col,Alert,Card, InputGroup,FormControl } from "react-bootstrap";
 import { User } from "../types";
 import NavBar from "./NavBar";
 import Loading from "./Loading";
 
 export default function StudentDashboard(props: RouteComponentProps) {
-  const user = useSelector(selectUser) as User;
-  const dispatch = useDispatch();
   const [allAssignments,setAllAssignments] = useState<[] | undefined>(undefined);
 
 
@@ -37,18 +35,17 @@ export default function StudentDashboard(props: RouteComponentProps) {
     }
 
     const p: ReactElement[] = [];
+
     if(allAssignments.length  === 0){
       p.push(<Alert variant = "primary">No Assignments yet.</Alert>);
     }
 
-      // allAssignments.map((d) => <li key={d.name}>{d.name}</li>)
-    
     allAssignments.forEach((assignment) => {
       p.push(
         <div className = "p-1" key = {assignment}>
           <Row>
             <Col md = "auto">
-              {assignment}
+              <h4>{assignment} </h4>
             </Col>
           </Row>
         </div>
@@ -73,10 +70,20 @@ export default function StudentDashboard(props: RouteComponentProps) {
           <Col>
           <Card body>{renderAssignmentsList()}</Card>
           <br />
-          <Card body>
+          {/* <Card body>
             <h3> Add a new Assignment</h3>
+          <InputGroup className ="mb-3">
+            <InputGroup.Prepend>
+            <InputGroup.Text>Assignment Name </InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+                    placeholder="Mid Semester Lab Exam"
+                    type="text"
+                  
+                  />
+          </InputGroup>
 
-          </Card>
+          </Card> */}
           </Col>
         </Row>
       </Container>
