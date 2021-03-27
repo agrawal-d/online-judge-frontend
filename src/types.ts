@@ -26,7 +26,7 @@ type ValidatorError = {
 };
 
 export type Testcase = {
-  id: string;
+  _id: string;
   input: string;
   output: string;
   verdict?: string;
@@ -35,16 +35,19 @@ export type Testcase = {
 
 export type Problem = {
   name: string;
-  id: string;
+  _id: string;
   statement: string;
   language: string;
   testcases: [Testcase];
 };
 
 export type AssignmentDetails = {
-  id: string;
+  _id: string;
   name: string;
   start: string;
+  student_ids: string[];
+  prof_id: string;
+  ta_id: string;
   end: string;
   problems: [Problem];
 };

@@ -77,9 +77,9 @@ export default function Assignment(props: RouteComponentProps) {
     setAssignment(ass);
 
     const res = await axios.post("/assignments/run-testcase", {
-      assignment_id: assignment.id,
-      problem_id: problem.id,
-      testcase_id: testcase.id,
+      assignment_id: assignment._id,
+      problem_id: problem._id,
+      testcase_id: testcase._id,
       code: myCode[problemIdx],
       input: testcase.input,
       expected_output: testcase.output,

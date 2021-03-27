@@ -1,13 +1,23 @@
 import { Link, RouteComponentProps } from "@reach/router";
 import React from "react";
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Container, Row, Col, Card, Form, Button, InputGroup, FormControl, Alert, Collapse } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  InputGroup,
+  FormControl,
+  Alert,
+  Collapse,
+} from "react-bootstrap";
 import NavBar from "./NavBar";
 import axios from "axios";
 import { setGlobalErrors } from "../reducers/globalErrorsReducer";
-import { start } from "repl";
-
+import Datetime from "react-datetime";
 
 export default function InstructorDashboard(props: RouteComponentProps) {
   const dispatch = useDispatch();
@@ -32,10 +42,10 @@ export default function InstructorDashboard(props: RouteComponentProps) {
       setError("No student Added");
       return;
     }
-    if(!startDateTime){
+    if (!startDateTime) {
       setError("Set Start Time");
     }
-    if(!endDateTime){
+    if (!endDateTime) {
       setError("set End Time");
     }
     if (startDateTime > endDateTime) {
@@ -52,20 +62,21 @@ export default function InstructorDashboard(props: RouteComponentProps) {
         ta_ids: tas,
         student_ids: students,
         start: startDateTime,
-        end: endDateTime
-      }).then((res) => {
-      const data = res.data;
-      console.log(data);
-      if (data.errors) {
-        dispatch(setGlobalErrors(data.errors));
-        return;
-      }
+        end: endDateTime,
+      })
+      .then((res) => {
+        const data = res.data;
+        console.log(data);
+        if (data.errors) {
+          dispatch(setGlobalErrors(data.errors));
+          return;
+        }
 
-      setNewTAEmails("");
-      setStudentMails("");
-      setName("");
-      setError("");
-    });
+        setNewTAEmails("");
+        setStudentMails("");
+        setName("");
+        setError("");
+      });
   }
 
   return (
@@ -85,90 +96,91 @@ export default function InstructorDashboard(props: RouteComponentProps) {
 
           <Row>
             <Col>
-
-          <Collapse in={open}>
-            <div>
-              <Row>
+              <Collapse in={open}>
                 <div>
-                  {error && <Alert variant="danger">{error}</Alert>}
+                  <Row>
+                    <div>
+                      {error && <Alert variant="danger">{error}</Alert>}
+                    </div>
+                  </Row>
+
+                  <Row>
+                    <Col>
+                      <Card.Header></Card.Header>
+                      <Card body>
+                        <Form>
+                          <Form.Group id="name">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              required
+                            />
+                          </Form.Group>
+                          <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                              <InputGroup.Text>Add TA by Email</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                              placeholder="example@hyderabad.bits-pilani.ac.in"
+                              value={newTAEmails}
+                              type="email"
+                              onChange={(e) => setNewTAEmails(e.target.value)}
+                            />
+                          </InputGroup>
+
+                          <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                              <InputGroup.Text>
+                                Add Students by Email
+                              </InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl
+                              placeholder="example@hyderabad.bits-pilani.ac.in"
+                              value={newStudentEmails}
+                              type="email"
+                              onChange={(e) => setStudentMails(e.target.value)}
+                            />
+                          </InputGroup>
+
+                          <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                              <InputGroup.Text>Start Date</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Datetime
+                              value={startDateTime}
+                              onChange={(e) => {
+                                if (typeof e !== "string") {
+                                  setStartDateTime(e.toISOString());
+                                }
+                              }}
+                            />
+                          </InputGroup>
+
+                          <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                              <InputGroup.Text>End Date</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Datetime
+                              value={endDateTime}
+                              onChange={(e) => {
+                                if (typeof e !== "string") {
+                                  setEndDateTime(e.toISOString());
+                                }
+                              }}
+                            />
+                          </InputGroup>
+
+                          <Button variant="primary" onClick={addAll}>
+                            Submit
+                          </Button>
+                        </Form>
+                      </Card>
+                    </Col>
+                  </Row>
                 </div>
-
-              </Row>
-
-              <Row>
-
-                <Col>
-                  <Card.Header>
-
-                  </Card.Header>
-                  <Card body>
-                    <Form>
-                      <Form.Group id="name">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-                      </Form.Group>
-                      <InputGroup className="mb-3">
-
-                        <InputGroup.Prepend>
-                          <InputGroup.Text>Add TA by Email</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                          placeholder="example@hyderabad.bits-pilani.ac.in"
-                          value={newTAEmails}
-                          type="email"
-                          onChange={(e) => setNewTAEmails(e.target.value)}
-                        />
-                      </InputGroup>
-
-
-                      <InputGroup className="mb-3">
-
-                        <InputGroup.Prepend>
-                          <InputGroup.Text>Add Students by Email</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                          placeholder="example@hyderabad.bits-pilani.ac.in"
-                          value={newStudentEmails}
-                          type="email"
-                          onChange={(e) => setStudentMails(e.target.value)}
-                        />
-                      </InputGroup>
-
-                      <InputGroup className="mb-3">
-
-                        <InputGroup.Prepend>
-                          <InputGroup.Text>Start Date</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                          type="datetime-local"
-                          value={startDateTime}
-                          onChange={(e) => setStartDateTime(e.target.value)}
-                        />
-                      </InputGroup>
-
-                      <InputGroup className="mb-3">
-
-                        <InputGroup.Prepend>
-                          <InputGroup.Text>End Date</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                          type="datetime-local"
-                          value={endDateTime}
-                          onChange={(e) => setEndDateTime(e.target.value)}
-                        />
-                      </InputGroup>
-
-
-                      <Button variant="primary" onClick={addAll}>
-                        Submit
-                      </Button>
-                    </Form>
-                  </Card>
-                </Col>
-              </Row>
-            </div>
-          </Collapse>
-
+              </Collapse>
             </Col>
             <Col>
               <Col>
@@ -181,7 +193,6 @@ export default function InstructorDashboard(props: RouteComponentProps) {
               </Col>
             </Col>
           </Row>
-
         </Container>
       </div>
     </>
