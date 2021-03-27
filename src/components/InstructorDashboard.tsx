@@ -1,5 +1,5 @@
 import { Link, RouteComponentProps } from "@reach/router";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -13,11 +13,16 @@ import {
   FormControl,
   Alert,
   Collapse,
+  Tab,
+  Tabs,
 } from "react-bootstrap";
 import NavBar from "./NavBar";
 import axios from "axios";
 import { setGlobalErrors } from "../reducers/globalErrorsReducer";
 import Datetime from "react-datetime";
+import { AssignmentDetails } from "../types";
+import ProblemCreator from "./ProblemCreator";
+import Loading from "./Loading";
 
 export default function InstructorDashboard(props: RouteComponentProps) {
   const dispatch = useDispatch();
@@ -28,6 +33,27 @@ export default function InstructorDashboard(props: RouteComponentProps) {
   const [endDateTime, setEndDateTime] = useState<string>("");
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
+  const [myAssignments, setMyAssignments] = useState<
+    AssignmentDetails[] | null
+  >(null);
+  const [currAssignmentIdx, setCurrAssignmentIdx] = useState<number>(0);
+
+  useEffect(() => {
+    if (!myAssignments) {
+      updateInsAssignments();
+    }
+  });
+
+  async function updateInsAssignments() {
+    const res = await axios.get("/users/get-instructor-assignments");
+
+    if (res.data.errors) {
+      return setGlobalErrors(res.data.errors);
+    }
+
+    const assignments: AssignmentDetails[] = res.data;
+    setMyAssignments(assignments);
+  }
 
   function addAll() {
     if (!name) {
@@ -76,7 +102,116 @@ export default function InstructorDashboard(props: RouteComponentProps) {
         setStudentMails("");
         setName("");
         setError("");
+        updateInsAssignments();
       });
+  }
+
+  function renderProblemCreator() {
+    if (!myAssignments || myAssignments.length === 0) {
+      return <h4>Create an assignment to add problems to it</h4>;
+    }
+
+    const options: React.ReactElement[] = [];
+
+    for (let idx = 0; idx < myAssignments.length; idx++) {
+      options.push(<option value={idx} label={myAssignments[idx].name} />);
+    }
+
+    return (
+      <div>
+        <h4>Add problem to &nbsp;</h4>
+        <select
+          className="form-control"
+          onChange={(e) => {
+            setCurrAssignmentIdx(parseInt(e.target.value));
+          }}
+        >
+          {options}
+        </select>
+        <hr />
+        <ProblemCreator assignment={myAssignments[currAssignmentIdx]} />
+      </div>
+    );
+  }
+
+  function renderAssignmentCreator() {
+    return (
+      <div>
+        <p>
+          Create a new assignment here. You can add problem statements and
+          testcases later.
+        </p>
+        <div>{error && <Alert variant="danger">{error}</Alert>}</div>
+        <Form>
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Assignment Name</InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              placeholder="Something Interesting"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Add TA by Email</InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              placeholder="example@hyderabad.bits-pilani.ac.in"
+              value={newTAEmails}
+              type="email"
+              onChange={(e) => setNewTAEmails(e.target.value)}
+            />
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Add Students by Email</InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl
+              placeholder="example@hyderabad.bits-pilani.ac.in"
+              value={newStudentEmails}
+              type="email"
+              onChange={(e) => setStudentMails(e.target.value)}
+            />
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text>Start Date</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Datetime
+              value={startDateTime}
+              onChange={(e) => {
+                if (typeof e !== "string") {
+                  setStartDateTime(e.toISOString());
+                }
+              }}
+            />
+          </InputGroup>
+
+          <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+              <InputGroup.Text>End Date</InputGroup.Text>
+            </InputGroup.Prepend>
+            <Datetime
+              value={endDateTime}
+              onChange={(e) => {
+                if (typeof e !== "string") {
+                  setEndDateTime(e.toISOString());
+                }
+              }}
+            />
+          </InputGroup>
+
+          <Button variant="primary" onClick={addAll}>
+            Submit
+          </Button>
+        </Form>
+      </div>
+    );
   }
 
   return (
@@ -85,102 +220,18 @@ export default function InstructorDashboard(props: RouteComponentProps) {
         <Container>
           <NavBar />
           <Row>
-            <Button
-              onClick={() => setOpen(!open)}
-              aria-controls="example-collapse-text"
-              aria-expanded={open}
-            >
-              Add Assignment
-            </Button>
-          </Row>
-
-          <Row>
             <Col>
-              <Collapse in={open}>
-                <div>
-                  <Row>
-                    <div>
-                      {error && <Alert variant="danger">{error}</Alert>}
-                    </div>
-                  </Row>
-
-                  <Row>
-                    <Col>
-                      <Card.Header></Card.Header>
-                      <Card body>
-                        <Form>
-                          <Form.Group id="name">
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={name}
-                              onChange={(e) => setName(e.target.value)}
-                              required
-                            />
-                          </Form.Group>
-                          <InputGroup className="mb-3">
-                            <InputGroup.Prepend>
-                              <InputGroup.Text>Add TA by Email</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                              placeholder="example@hyderabad.bits-pilani.ac.in"
-                              value={newTAEmails}
-                              type="email"
-                              onChange={(e) => setNewTAEmails(e.target.value)}
-                            />
-                          </InputGroup>
-
-                          <InputGroup className="mb-3">
-                            <InputGroup.Prepend>
-                              <InputGroup.Text>
-                                Add Students by Email
-                              </InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                              placeholder="example@hyderabad.bits-pilani.ac.in"
-                              value={newStudentEmails}
-                              type="email"
-                              onChange={(e) => setStudentMails(e.target.value)}
-                            />
-                          </InputGroup>
-
-                          <InputGroup className="mb-3">
-                            <InputGroup.Prepend>
-                              <InputGroup.Text>Start Date</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Datetime
-                              value={startDateTime}
-                              onChange={(e) => {
-                                if (typeof e !== "string") {
-                                  setStartDateTime(e.toISOString());
-                                }
-                              }}
-                            />
-                          </InputGroup>
-
-                          <InputGroup className="mb-3">
-                            <InputGroup.Prepend>
-                              <InputGroup.Text>End Date</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <Datetime
-                              value={endDateTime}
-                              onChange={(e) => {
-                                if (typeof e !== "string") {
-                                  setEndDateTime(e.toISOString());
-                                }
-                              }}
-                            />
-                          </InputGroup>
-
-                          <Button variant="primary" onClick={addAll}>
-                            Submit
-                          </Button>
-                        </Form>
-                      </Card>
-                    </Col>
-                  </Row>
-                </div>
-              </Collapse>
+              <Tabs defaultActiveKey="add-assign">
+                <Tab eventKey="add-assign" title="Create assignment">
+                  <Col>{renderAssignmentCreator()}</Col>
+                </Tab>
+                <Tab eventKey="profile" title="Add problems">
+                  <Col>{renderProblemCreator()}</Col>
+                </Tab>
+                <Tab eventKey="contact" title="Contact" disabled>
+                  <Loading />
+                </Tab>
+              </Tabs>
             </Col>
             <Col>
               <Col>

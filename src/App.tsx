@@ -58,6 +58,19 @@ function App() {
     }
   });
 
+  // useEffect(() => {
+  //   // window.addEventListener("error", function (event) {
+  //   //   dispatch(
+  //   //     setGlobalErrors([
+  //   //       {
+  //   //         message: "An unexpected error happened. Please reload the page.",
+  //   //       },
+  //   //     ])
+  //   //   );
+  //   //   console.error(event);
+  //   // });
+  // });
+
   useEffect(() => {
     if (globalErrors.length > 0) {
       handleShow();

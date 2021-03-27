@@ -13,6 +13,7 @@ import {
   InputGroup,
   FormControl,
   Badge,
+  Button,
 } from "react-bootstrap";
 import { AssignmentDetails, User } from "../types";
 import NavBar from "./NavBar";
@@ -67,6 +68,10 @@ export default function StudentDashboard(props: RouteComponentProps) {
                 <Badge variant="warning">
                   Finishes {new Date(assignment.end).toLocaleString()}
                 </Badge>
+                <hr />
+                <Link to={"/assignment/" + assignment._id}>
+                  <Button>Solve</Button>
+                </Link>
               </Col>
             </Row>
           </Card>

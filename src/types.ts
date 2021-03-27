@@ -36,9 +36,9 @@ export type Testcase = {
 export type Problem = {
   name: string;
   _id: string;
-  statement: string;
+  problem_statement: string;
   language: string;
-  testcases: [Testcase];
+  testcases: Testcase[];
 };
 
 export type AssignmentDetails = {

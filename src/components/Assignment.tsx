@@ -35,7 +35,7 @@ export default function Assignment(props: RouteComponentProps) {
 
   useEffect(() => {
     async function getAssignment(): Promise<AssignmentDetails> {
-      return (await axios.get(`/assignments?assignmentId=${assignmentID}`))
+      return (await axios.get(`/assignments?assignment_id=${assignmentID}`))
         .data;
     }
 
@@ -73,6 +73,8 @@ export default function Assignment(props: RouteComponentProps) {
       ...testcase,
       verdict: "Running ...",
     };
+
+    toast("Running testcase");
 
     setAssignment(ass);
 
@@ -214,7 +216,7 @@ export default function Assignment(props: RouteComponentProps) {
           <Col>
             <h3>{problem().name}</h3>
             <div
-              dangerouslySetInnerHTML={{ __html: problem().statement }}
+              dangerouslySetInnerHTML={{ __html: problem().problem_statement }}
             ></div>
           </Col>
           <Col>
