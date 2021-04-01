@@ -48,7 +48,7 @@ export default function StudentDashboard(props: RouteComponentProps) {
 
     const p: ReactElement[] = [];
 
-    if (allAssignments.length === 0) {
+    if (allAssignments.length === 0 || allAssignments[0] === null) {
       p.push(<Alert variant="primary">No Assignments yet.</Alert>);
       return p;
     }

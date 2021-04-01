@@ -27,6 +27,7 @@ type ValidatorError = {
 
 export type Testcase = {
   _id: string;
+  visible: boolean;
   input: string;
   output: string;
   verdict?: string;

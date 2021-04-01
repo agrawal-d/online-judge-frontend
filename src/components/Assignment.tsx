@@ -23,7 +23,7 @@ import config from "../config";
 import { setGlobalErrors } from "../reducers/globalErrorsReducer";
 import classNames from "classnames";
 import { toast } from "react-toastify";
-import { clone } from "../lib";
+import { clone, dateInPast } from "../lib";
 
 export default function Assignment(props: RouteComponentProps) {
   const user = useSelector(selectUser) as User;
@@ -63,6 +63,23 @@ export default function Assignment(props: RouteComponentProps) {
   }
 
   const problem = () => assignment.problems[problemIdx];
+
+  const submit = async () => {
+    const res = await axios.post("/assignments/submit", {
+      assignment_id: assignment._id,
+      code: myCode,
+    });
+
+    if (res.data?.errors) {
+      setGlobalErrors(res.data?.errors);
+    }
+
+    toast(
+      "Assignment Submitted\nYou can submit as many times as you want before the deadline."
+    );
+
+    console.log(res.data);
+  };
 
   const runTestcase = async (problemIdx: number, testcaseIdx: number) => {
     const problem = assignment.problems[problemIdx];
@@ -156,54 +173,70 @@ export default function Assignment(props: RouteComponentProps) {
       // } else {
       //   variant = "danger";
       // }
-
-      items.push(
-        <Card className={tcClassNames}>
-          <Card.Body>
-            <h4>Testcase {idx + 1}</h4>
-            <p>
-              {tc.verdict && (
-                <>
-                  <b className="verdict">Status: {tc.verdict}</b>
-                  <br />
-                </>
-              )}
-              <b>Input</b>
-              <pre>
-                <code>{tc.input} </code>
-              </pre>
-              <b>Expected Output</b>
-              <pre>
-                <code>{tc.output} </code>
-              </pre>
-              {tc.got_output !== undefined && (
-                <>
-                  <b>Received Output</b>
-                  <pre>
-                    <code>{tc.got_output} </code>
-                  </pre>
-                </>
-              )}
-            </p>
-            <Button onClick={() => runTestcase(problemIdx, idx)}>
-              Run testcase
-            </Button>
-          </Card.Body>
-        </Card>
-      );
+      if (tc.visible) {
+        items.push(
+          <Card className={tcClassNames}>
+            <Card.Body>
+              <h4>Testcase {idx + 1}</h4>
+              <p>
+                {tc.verdict && (
+                  <>
+                    <b className="verdict">Status: {tc.verdict}</b>
+                    <br />
+                  </>
+                )}
+                <b>Input</b>
+                <pre>
+                  <code>{tc.input} </code>
+                </pre>
+                <b>Expected Output</b>
+                <pre>
+                  <code>{tc.output} </code>
+                </pre>
+                {tc.got_output !== undefined && (
+                  <>
+                    <b>Received Output</b>
+                    <pre>
+                      <code>{tc.got_output} </code>
+                    </pre>
+                  </>
+                )}
+              </p>
+              <Button onClick={() => runTestcase(problemIdx, idx)}>
+                Run testcase
+              </Button>
+            </Card.Body>
+          </Card>
+        );
+      }
     });
 
     return items;
   };
 
   const renderAssignment = () => {
+    if (dateInPast(new Date(assignment.end))) {
+      return (
+        <div className="text-center">
+          <h1>{assignment.name}</h1>
+          <Alert variant="danger">
+            You can no longer submit code to this assignment as the deadline is
+            over.
+          </Alert>
+          <Button variant="primary" size="lg">
+            View Results
+          </Button>
+        </div>
+      );
+    }
+
     console.log(problemIdx, myCode[problemIdx]);
     return (
       <div className="assignment">
         <Row>
           <Col>
             <h1>{assignment.name}</h1>
-            <Alert variant="warning">
+            <Alert variant="secondary">
               The assignment will end at{" "}
               <b>{new Date(assignment.end).toDateString()}</b>
             </Alert>
@@ -246,14 +279,21 @@ export default function Assignment(props: RouteComponentProps) {
             {renderTestcases()}
           </Col>
           <Col>
-            <Button variant="success" size="lg" block>
-              Submit Problem {problemIdx + 1}
+            <Button variant="success" size="lg" onClick={submit} block>
+              Submit entire assignment
+            </Button>
+            <Button variant="secondary" size="lg" block>
+              View Results
             </Button>
             <hr />
             <p>
               If you submit, your code will run against a set of additional,
               hidden testcases.
             </p>
+            <Alert variant="warning">
+              <b>Note: </b>You can submit as many times as you want, before the
+              deadline.
+            </Alert>
           </Col>
         </Row>
       </div>

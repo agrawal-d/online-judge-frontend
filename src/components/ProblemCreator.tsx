@@ -44,6 +44,7 @@ export default function ProblemCreator(props: {
       tcs.push({
         input: "",
         output: "",
+        visible: true,
         _id: "",
       });
     }
@@ -105,6 +106,18 @@ export default function ProblemCreator(props: {
               onChange={(e) => {
                 const newProblem = clone(problem);
                 newProblem.testcases[i].output = e.target.value;
+                setProblem(newProblem);
+              }}
+            />
+            <br />
+            Testcase visible to candidates{" "}
+            <input
+              type="checkbox"
+              checked={problem.testcases[i].visible}
+              onChange={(e) => {
+                const newProblem = clone(problem);
+                newProblem.testcases[i].visible = !newProblem.testcases[i]
+                  .visible;
                 setProblem(newProblem);
               }}
             />
