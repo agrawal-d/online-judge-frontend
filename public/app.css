@@ -6,6 +6,10 @@
   padding: 10px;
 }
 
+body {
+  overflow-y: scroll;
+}
+
 .home .trophy {
   width: 50%;
   padding: 20px 0px;
@@ -13,6 +17,17 @@
 
 .container {
   margin-top: 100px;
+}
+
+.fw {
+  display: block;
+  width: 100%;
+}
+
+.cup {
+  width: 400px;
+  margin: 0 auto;
+  display: block;
 }
 
 .b {
@@ -27,6 +42,10 @@
 
 .btn {
   margin: 0px 2px;
+}
+
+.stat {
+  font-size: 80px;
 }
 
 .code-editor {

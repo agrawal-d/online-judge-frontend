@@ -55,3 +55,27 @@ export type AssignmentDetails = {
 type CustomError = { message: string };
 
 export type GlobalError = XOR<CustomError, ValidatorError>;
+
+export type Submission = {
+  he_id: string;
+  status_update_url: string;
+  assignment_id: string;
+  submitter_google_id: string;
+  created: Date;
+  verdict: string;
+  code: string;
+  testcase_id: string;
+  evaluated: boolean;
+  language: string;
+  stdin: string;
+  stdout: string;
+  time_used: string;
+};
+
+export type Result = {
+  assignment: AssignmentDetails;
+  submissions: {
+    student: User;
+    submissions: Submission[];
+  }[];
+};

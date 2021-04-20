@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "../reducers/userReducer";
-import { RouteComponentProps } from "@reach/router";
+import { Link, RouteComponentProps } from "@reach/router";
 import {
   Container,
   Row,
@@ -223,9 +223,11 @@ export default function Assignment(props: RouteComponentProps) {
             You can no longer submit code to this assignment as the deadline is
             over.
           </Alert>
-          <Button variant="primary" size="lg">
-            View Results
-          </Button>
+          <Link to={"/results/" + assignment._id}>
+            <Button variant="primary" size="lg">
+              View Results
+            </Button>
+          </Link>
         </div>
       );
     }
@@ -235,14 +237,19 @@ export default function Assignment(props: RouteComponentProps) {
       <div className="assignment">
         <Row>
           <Col>
-            <h1>{assignment.name}</h1>
+            <h1>
+              {assignment.name}
+              <Link to={"/results/" + assignment._id}>
+                <Button className="float-right" variant="warning">
+                  View Results
+                </Button>
+              </Link>
+            </h1>
             <Alert variant="secondary">
               The assignment will end at{" "}
               <b>{new Date(assignment.end).toDateString()}</b>
             </Alert>
-
-            {renderPagination()}
-            <hr />
+            {renderPagination()} <hr />
           </Col>
         </Row>
         <Row>
@@ -281,9 +288,6 @@ export default function Assignment(props: RouteComponentProps) {
           <Col>
             <Button variant="success" size="lg" onClick={submit} block>
               Submit entire assignment
-            </Button>
-            <Button variant="secondary" size="lg" block>
-              View Results
             </Button>
             <hr />
             <p>

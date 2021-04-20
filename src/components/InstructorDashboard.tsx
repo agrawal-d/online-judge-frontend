@@ -1,5 +1,5 @@
 import { Link, RouteComponentProps } from "@reach/router";
-import React, { useEffect } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -214,6 +214,42 @@ export default function InstructorDashboard(props: RouteComponentProps) {
     );
   }
 
+  const renderAssignments = () => {
+    if (!myAssignments) {
+      return <Loading />;
+    }
+
+    const p: React.ReactNode[] = [];
+
+    if (myAssignments.length === 0 || myAssignments[0] === null) {
+      p.push(<Alert variant="primary">No Assignments yet.</Alert>);
+      return p;
+    }
+
+    console.log(myAssignments);
+    myAssignments.forEach((assignment) => {
+      p.push(
+        <>
+          <Card body className="p-1" key={assignment._id}>
+            <Row>
+              <Col>
+                <h5>{assignment.name}</h5>
+                Finishes {new Date(assignment.end).toLocaleString()}
+                <hr />
+                <Link to={"/results/" + assignment._id}>
+                  <Button variant="info">View results</Button>
+                </Link>
+              </Col>
+            </Row>
+          </Card>
+          <br />
+        </>
+      );
+    });
+
+    return <>{p}</>;
+  };
+
   return (
     <>
       <div className="home">
@@ -221,6 +257,8 @@ export default function InstructorDashboard(props: RouteComponentProps) {
           <NavBar />
           <Row>
             <Col>
+              <h2>Assignment Management</h2>
+              <hr />
               <Tabs defaultActiveKey="add-assign">
                 <Tab eventKey="add-assign" title="Create assignment">
                   <Col>{renderAssignmentCreator()}</Col>
@@ -234,14 +272,20 @@ export default function InstructorDashboard(props: RouteComponentProps) {
               </Tabs>
             </Col>
             <Col>
-              <Col>
-                <h3>Admin actions</h3>
-                <ul>
-                  <li>
-                    <Link to="/user-setup">Setup Hacker Earth Credentials</Link>
-                  </li>
-                </ul>
-              </Col>
+              <h2>Results Management</h2>
+              <hr />
+              <p>
+                View the performance of your students in various assignments
+                created by you.
+              </p>
+              {renderAssignments()}
+              <hr />
+              <h3>Admin actions</h3>
+              <ul>
+                <li>
+                  <Link to="/user-setup">Setup Hacker Earth Credentials</Link>
+                </li>
+              </ul>
             </Col>
           </Row>
         </Container>
