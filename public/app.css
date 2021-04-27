@@ -30,6 +30,14 @@ body {
   display: block;
 }
 
+.block {
+  display: block;
+}
+
+.he-bg {
+  background-color: rgb(44, 55, 85) !important;
+}
+
 .b {
   border: 1px solid grey;
 }
